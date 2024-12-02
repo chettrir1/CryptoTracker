@@ -46,6 +46,17 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    //compose (ui)
+    implementation(libs.bundles.compose)
+    debugImplementation(libs.bundles.compose.debug)
+
+    //koin (dependency injection)
+    implementation(libs.bundles.koin)
+
+    //ktor (network call)
+    implementation(libs.bundles.ktor)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
