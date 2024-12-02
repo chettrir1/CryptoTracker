@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.chettri.cryptotracker.crypto.presentation.DisplayableNumber
+import com.chettri.cryptotracker.crypto.models.DisplayableNumber
 import com.chettri.cryptotracker.ui.theme.AppTheme
 import com.chettri.cryptotracker.ui.theme.greenBackground
 

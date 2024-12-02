@@ -1,4 +1,4 @@
-package com.chettri.cryptotracker.crypto.presentation
+package com.chettri.cryptotracker.crypto.models
 
 import androidx.annotation.DrawableRes
 import com.chettri.cryptotracker.crypto.domain.Coin

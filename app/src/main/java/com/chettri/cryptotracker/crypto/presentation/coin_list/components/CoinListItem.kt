@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chettri.cryptotracker.crypto.domain.Coin
-import com.chettri.cryptotracker.crypto.presentation.CoinUi
-import com.chettri.cryptotracker.crypto.presentation.toCoinUi
+import com.chettri.cryptotracker.crypto.models.CoinUi
+import com.chettri.cryptotracker.crypto.models.toCoinUi
 import com.chettri.cryptotracker.ui.theme.AppTheme
 
 @Composable
