@@ -2,7 +2,7 @@ package com.chettri.cryptotracker.crypto.models
 
 import androidx.annotation.DrawableRes
 import com.chettri.cryptotracker.crypto.domain.Coin
-import com.chettri.cryptotracker.util.getDrawableIdForCoin
+import com.chettri.cryptotracker.core.presentation.util.getDrawableIdForCoin
 import java.text.NumberFormat
 import java.util.Locale
 
