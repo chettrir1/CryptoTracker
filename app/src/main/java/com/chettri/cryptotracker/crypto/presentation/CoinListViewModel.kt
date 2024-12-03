@@ -1,11 +1,17 @@
-package com.chettri.cryptotracker.crypto.presentation.coin_list
+package com.chettri.cryptotracker.crypto.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chettri.cryptotracker.core.domain.util.onError
 import com.chettri.cryptotracker.core.domain.util.onSuccess
 import com.chettri.cryptotracker.crypto.domain.CoinDataSource
+import com.chettri.cryptotracker.crypto.models.CoinUi
 import com.chettri.cryptotracker.crypto.models.toCoinUi
+import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListAction
+import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListEvent
+import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,6 +20,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 
 class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel() {
 
@@ -29,14 +36,11 @@ class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel(
     private val _events = Channel<CoinListEvent>()
     val events = _events.receiveAsFlow()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onAction(action: CoinListAction) {
         when (action) {
             is CoinListAction.OnCoinClick -> {
-                _state.update {
-                    it.copy(
-                        selectedCoin = action.coinUi
-                    )
-                }
+                selectCoin(action.coinUi)
             }
 
             is CoinListAction.OnRefresh -> loadCoins()
@@ -67,4 +71,23 @@ class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun selectCoin(coinUi: CoinUi) {
+        _state.update { it.copy(selectedCoin = coinUi) }
+
+        viewModelScope.launch {
+            coinDataSource.getCoinHistory(
+                coinId = coinUi.id,
+                start = ZonedDateTime.now().minusDays(5),
+                end = ZonedDateTime.now()
+            )
+                .onSuccess { history ->
+                    println(history)
+                }
+                .onError { error ->
+                    _events.send(CoinListEvent.Error(error))
+                }
+        }
+
+    }
 }

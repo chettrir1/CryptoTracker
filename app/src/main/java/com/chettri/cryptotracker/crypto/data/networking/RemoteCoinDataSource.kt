@@ -47,7 +47,7 @@ class RemoteCoinDataSource(
             .toEpochMilli()
         return safeCall<CoinPriceResponseDto> {
             httpClient.get(
-                urlString = constructUrl("/")
+                urlString = constructUrl("/assets/$coinId/history")
             ) {
                 parameter("interval", "h6")
                 parameter("start", startMillis)

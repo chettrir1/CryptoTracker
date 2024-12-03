@@ -17,7 +17,7 @@ import com.chettri.cryptotracker.core.presentation.util.observeAsEvents
 import com.chettri.cryptotracker.crypto.presentation.coin_detail.CoinDetailScreen
 import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListEvent
 import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListScreen
-import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListViewModel
+import com.chettri.cryptotracker.crypto.presentation.CoinListViewModel
 import com.chettri.cryptotracker.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
 
