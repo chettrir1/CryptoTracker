@@ -1,4 +1,4 @@
-package com.chettri.cryptotracker.util
+package com.chettri.cryptotracker.core.domain.util
 
 typealias DomainError = Error
 
