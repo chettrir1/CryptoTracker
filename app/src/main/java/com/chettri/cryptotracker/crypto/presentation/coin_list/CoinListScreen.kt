@@ -21,6 +21,7 @@ import com.chettri.cryptotracker.ui.theme.AppTheme
 @Composable
 fun CoinListScreen(
     state: CoinListState,
+    onAction: (CoinListAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -38,7 +39,9 @@ fun CoinListScreen(
             items(state.coins) { coinUi ->
                 CoinListItem(
                     coinUi = coinUi,
-                    onClick = {},
+                    onClick = {
+                        onAction(CoinListAction.OnCoinClick(coinUi))
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -59,6 +62,7 @@ private fun CoinListScreenPreview() {
                     previewCoin.toCoinUi().copy(id = it.toString())
                 }
             ),
+            onAction = {}
         )
     }
 
