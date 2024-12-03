@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CoinListViewModel(
-    private val coinDataSource: CoinDataSource,
-) : ViewModel() {
+class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel() {
 
     private val _state = MutableStateFlow(CoinListState())
     val state = _state
