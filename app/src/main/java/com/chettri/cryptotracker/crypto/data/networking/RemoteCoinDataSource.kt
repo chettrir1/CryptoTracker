@@ -57,4 +57,5 @@ class RemoteCoinDataSource(
             response.data.map { it.toCoinPrice() }
         }
     }
+
 }
