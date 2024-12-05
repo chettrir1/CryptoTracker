@@ -9,6 +9,7 @@ import com.chettri.cryptotracker.core.domain.util.onSuccess
 import com.chettri.cryptotracker.crypto.domain.CoinDataSource
 import com.chettri.cryptotracker.crypto.models.CoinUi
 import com.chettri.cryptotracker.crypto.models.toCoinUi
+import com.chettri.cryptotracker.crypto.presentation.coin_detail.DataPoint
 import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListAction
 import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListEvent
 import com.chettri.cryptotracker.crypto.presentation.coin_list.CoinListState
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel() {
 
@@ -82,7 +84,24 @@ class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel(
                 end = ZonedDateTime.now()
             )
                 .onSuccess { history ->
-                    println(history)
+                    val dataPoints = history
+                        .sortedBy { it.dateTime }
+                        .map {
+                            DataPoint(
+                                x = it.dateTime.hour.toFloat(),
+                                y = it.priceUsd.toFloat(),
+                                xLabel = DateTimeFormatter
+                                    .ofPattern("ha\nM/d")
+                                    .format(it.dateTime)
+                            )
+                        }
+                    _state.update {
+                        it.copy(
+                            selectedCoin = it.selectedCoin?.copy(
+                                coinPriceHistory = dataPoints
+                            )
+                        )
+                    }
                 }
                 .onError { error ->
                     _events.send(CoinListEvent.Error(error))
