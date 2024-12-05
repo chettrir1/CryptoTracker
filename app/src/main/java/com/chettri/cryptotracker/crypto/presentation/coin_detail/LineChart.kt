@@ -3,6 +3,7 @@ package com.chettri.cryptotracker.crypto.presentation.coin_detail
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -18,7 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -80,11 +84,26 @@ fun LineChart(
 
     var isShowingDataPoints by remember {
         mutableStateOf(selectedDataPoint != null)
-
     }
 
     Canvas(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .pointerInput(drawPoints, xLabelWidth) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    val newSelectedDataPointIndex = getSelectedDataPointIndex(
+                        touchOffsetX = change.position.x,
+                        triggerWidth = xLabelWidth,
+                        drawPoints = drawPoints
+                    )
+                    isShowingDataPoints =
+                        (newSelectedDataPointIndex + visibleDataPointsIndices.first) in visibleDataPointsIndices
+
+                    if (isShowingDataPoints) {
+                        onSelectedDataPoint(dataPoints[newSelectedDataPointIndex])
+                    }
+                }
+            }
     ) {
         val minLabelSpacingYPx = style.minYLabelSpacing.toPx()
         val verticalPaddingPx = style.verticalPadding.toPx()
@@ -262,6 +281,44 @@ fun LineChart(
                     xLabel = dataPoints[it].xLabel
                 )
             }
+
+            val connectionPoints1 = mutableListOf<DataPoint>()
+            val connectionPoints2 = mutableListOf<DataPoint>()
+
+            for (i in 1 until drawPoints.size) {
+                val previous = drawPoints[i - 1]
+                val current = drawPoints[i]
+                val x = (current.x + previous.x) / 2f
+                val y1 = previous.y
+                val y2 = current.y
+                connectionPoints1.add(DataPoint(x, y1, ""))
+                connectionPoints2.add(DataPoint(x, y2, ""))
+            }
+
+            val linePath = Path().apply {
+                if (drawPoints.isNotEmpty()) {
+                    moveTo(drawPoints.first().x, drawPoints.first().y)
+                    for (i in 1 until drawPoints.size) {
+                        cubicTo(
+                            x1 = connectionPoints1[i - 1].x,
+                            y1 = connectionPoints1[i - 1].y,
+                            x2 = connectionPoints2[i - 1].x,
+                            y2 = connectionPoints2[i - 1].y,
+                            x3 = drawPoints[i].x,
+                            y3 = drawPoints[i].y
+                        )
+                    }
+                }
+            }
+            drawPath(
+                path = linePath,
+                color = style.selectedColor,
+                style = Stroke(
+                    width = 5f,
+                    cap = StrokeCap.Round
+                )
+            )
+
             drawPoints.forEachIndexed { index, dataPoint ->
                 if (isShowingDataPoints) {
                     val circleOffset = Offset(
@@ -291,6 +348,19 @@ fun LineChart(
                 }
             }
         }
+    }
+}
+
+private fun getSelectedDataPointIndex(
+    touchOffsetX: Float,
+    triggerWidth: Float,
+    drawPoints: List<DataPoint>
+): Int {
+    val triggerRangeLeft = touchOffsetX - triggerWidth / 2f
+    val triggerRangeRight = touchOffsetX + triggerWidth / 2f
+
+    return drawPoints.indexOfFirst {
+        it.x in triggerRangeLeft..triggerRangeRight
     }
 }
 
