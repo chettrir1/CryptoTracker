@@ -1,7 +1,5 @@
 package com.chettri.cryptotracker.crypto.presentation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chettri.cryptotracker.core.domain.util.onError
@@ -38,7 +36,6 @@ class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel(
     private val _events = Channel<CoinListEvent>()
     val events = _events.receiveAsFlow()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun onAction(action: CoinListAction) {
         when (action) {
             is CoinListAction.OnCoinClick -> {
@@ -73,7 +70,6 @@ class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun selectCoin(coinUi: CoinUi) {
         _state.update { it.copy(selectedCoin = coinUi) }
 
@@ -107,6 +103,5 @@ class CoinListViewModel(private val coinDataSource: CoinDataSource) : ViewModel(
                     _events.send(CoinListEvent.Error(error))
                 }
         }
-
     }
 }
