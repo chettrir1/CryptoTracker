@@ -1,8 +1,9 @@
 package com.chettri.cryptotracker.crypto.models
 
 import androidx.annotation.DrawableRes
-import com.chettri.cryptotracker.crypto.domain.Coin
 import com.chettri.cryptotracker.core.presentation.util.getDrawableIdForCoin
+import com.chettri.cryptotracker.crypto.domain.Coin
+import com.chettri.cryptotracker.crypto.presentation.coin_detail.DataPoint
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -14,7 +15,9 @@ data class CoinUi(
     val marketCapUsd: DisplayableNumber,
     val priceUsd: DisplayableNumber,
     val changePercent24Hr: DisplayableNumber,
-    @DrawableRes val iconRes: Int,
+    val coinPriceHistory: List<DataPoint> = emptyList(),
+    @DrawableRes
+    val iconRes: Int,
 )
 
 data class DisplayableNumber(
